@@ -25,6 +25,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-*
+.trae/
 
 # 安装清单
 manifests/
