@@ -1,0 +1,39 @@
+# 配置文件（包含敏感信息）
+includes/config.php
+includes/db.php
+includes/installed.lock
+
+# 上传目录
+uploads/*
+!uploads/.gitkeep
+
+# 日志文件
+logs/
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE文件
+.idea/
+.vscode/
+*.sublime-*
+
+# 安装清单
+manifests/
+
+# 数据目录
+data/
+
+# 更新服务器（需单独部署）
+update_server/
+
+# 发布包
+*.zip

@@ -1,0 +1,16 @@
+RewriteEngine On
+RewriteBase /
+
+# 调试日志
+RewriteLog "/var/log/apache2/rewrite.log"
+RewriteLogLevel 9
+
+# 确保直接访问 install.php 可以工作
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([A-Za-z0-9]{3,8})/?$ install.php?suffix=$1 [L,QSA]
+
+# 添加 CORS 头
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type"
