@@ -1053,7 +1053,7 @@ if ($result) {
     
     <script>
     // 获取网站URL
-    var siteUrl = '<?php echo $config['site_url']; ?>';
+    var siteUrl = '<?php echo htmlspecialchars($config['site_url'], ENT_QUOTES, 'UTF-8'); ?>';
     if (!siteUrl) {
         siteUrl = window.location.origin;
     }

@@ -39,10 +39,10 @@ if (file_exists($config_file)) {
 }
 
 // 获取客户端信息
-$client_version = isset($_POST['version']) ? $_POST['version'] : '1.0.0';
-$client_domain = isset($_POST['domain']) ? $_POST['domain'] : 'unknown';
+$client_version = isset($_POST['version']) ? htmlspecialchars($_POST['version'], ENT_QUOTES, 'UTF-8') : '1.0.0';
+$client_domain = isset($_POST['domain']) ? htmlspecialchars($_POST['domain'], ENT_QUOTES, 'UTF-8') : 'unknown';
 $client_ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-$client_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+$client_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8') : 'unknown';
 
 // 记录安装统计
 function recordInstallStats($domain, $version, $ip, $user_agent, $stats_file) {

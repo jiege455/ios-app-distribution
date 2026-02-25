@@ -76,8 +76,8 @@ if (isset($_GET['logout'])) {
 
 // 处理删除安装记录
 if ($logged_in && isset($_GET['delete_install'])) {
-    $install_key = $_GET['delete_install'];
-    if (isset($stats['installs'][$install_key])) {
+    $install_key = preg_replace('/[^a-f0-9]/', '', $_GET['delete_install']); // 只允许md5格式的key
+    if (!empty($install_key) && isset($stats['installs'][$install_key])) {
         unset($stats['installs'][$install_key]);
         $stats['summary']['total_installs'] = count($stats['installs']);
         file_put_contents($stats_file, json_encode($stats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));

@@ -28,7 +28,7 @@ if (isset($_POST['check_update'])) {
                 'header' => 'Content-type: application/x-www-form-urlencoded',
                 'content' => http_build_query(array(
                     'version' => $current_version,
-                    'domain' => $_SERVER['HTTP_HOST'] ?? 'unknown',
+                    'domain' => htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'unknown', ENT_QUOTES, 'UTF-8'),
                 ))
             )
         ));
