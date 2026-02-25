@@ -288,7 +288,7 @@ if ($result) {
         .upload-section {
             border: 2px dashed #ddd;
             border-radius: 15px;
-            padding: 40px;
+            padding: 25px;
             text-align: center;
             background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
             transition: all 0.3s ease;
@@ -309,9 +309,9 @@ if ($result) {
         
         /* 上传图标美化 */
         .upload-icon-wrapper {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 25px;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 50%;
             display: flex;
@@ -324,14 +324,14 @@ if ($result) {
         
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-5px); }
         }
         
         .upload-icon-wrapper::before {
             content: '';
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
             animation: pulse 2s ease-in-out infinite;
@@ -343,32 +343,32 @@ if ($result) {
         }
         
         .upload-icon-wrapper svg {
-            width: 45px;
-            height: 45px;
+            width: 32px;
+            height: 32px;
             fill: white;
             position: relative;
             z-index: 1;
         }
         
         .upload-title {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .upload-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #888;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
         .upload-subtitle span {
             display: inline-block;
             background: #f0f0f0;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
-            margin: 0 5px;
+            margin: 0 3px;
             font-weight: 500;
         }
         
@@ -385,12 +385,12 @@ if ($result) {
         /* 文件选择区域美化 */
         .file-drop-zone {
             border: 2px dashed #ccc;
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 10px;
+            padding: 20px;
             background: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .file-drop-zone:hover {
@@ -405,7 +405,7 @@ if ($result) {
         
         .file-drop-zone-text {
             color: #888;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .file-drop-zone-text .browse {
@@ -432,8 +432,8 @@ if ($result) {
         }
         
         .file-icon {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 8px;
             display: flex;
@@ -442,8 +442,8 @@ if ($result) {
         }
         
         .file-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             fill: white;
         }
         
@@ -452,8 +452,8 @@ if ($result) {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 15px 40px;
-            font-size: 16px;
+            padding: 12px 30px;
+            font-size: 15px;
             font-weight: 600;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -954,6 +954,7 @@ if ($result) {
                         <div class="actions">
                             <a href="install.php?uid=<?php echo htmlspecialchars($upload['uid']); ?>" class="install-btn">安装</a>
                             <button class="copy-btn" onclick="showQrcode('<?php echo htmlspecialchars($upload['uid']); ?>', '<?php echo htmlspecialchars($upload['app_name']); ?>')">二维码</button>
+                            <button class="copy-btn" style="background: #28a745;" onclick="copyLink('<?php echo htmlspecialchars($upload['uid']); ?>')">复制链接</button>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -1051,6 +1052,12 @@ if ($result) {
     </style>
     
     <script>
+    // 获取网站URL
+    var siteUrl = '<?php echo $config['site_url']; ?>';
+    if (!siteUrl) {
+        siteUrl = window.location.origin;
+    }
+    
     // 显示二维码弹窗
     function showQrcode(uid, appName) {
         var modal = document.getElementById('qrcodeModal');
@@ -1066,6 +1073,53 @@ if ($result) {
     function closeQrcode() {
         var modal = document.getElementById('qrcodeModal');
         modal.style.display = 'none';
+    }
+    
+    // 复制链接
+    function copyLink(uid) {
+        var link = siteUrl + '/install.php?uid=' + uid;
+        
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(link).then(function() {
+                showToast('链接已复制: ' + link);
+            }).catch(function() {
+                fallbackCopy(link);
+            });
+        } else {
+            fallbackCopy(link);
+        }
+    }
+    
+    // 备用复制方法
+    function fallbackCopy(text) {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('链接已复制: ' + text);
+        } catch (err) {
+            showToast('复制失败，请手动复制');
+        }
+        document.body.removeChild(textArea);
+    }
+    
+    // 显示提示
+    function showToast(message) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 25px; font-size: 14px; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(function() {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s';
+            setTimeout(function() {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 2000);
     }
     
     // 点击弹窗外部关闭
