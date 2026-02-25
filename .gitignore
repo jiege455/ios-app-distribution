@@ -33,8 +33,8 @@ manifests/
 # 数据目录
 data/
 
-# 更新服务器（需单独部署）
-update_server/
+# 更新服务器统计文件
+update_server/install_stats.json
 
 # 发布包
 *.zip

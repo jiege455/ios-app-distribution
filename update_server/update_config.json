@@ -1,0 +1,14 @@
+{
+    "latest_version": "1.0.0",
+    "download_url": "",
+    "update_title": "初始版本",
+    "changelog": [
+        {
+            "type": "feature",
+            "title": "系统首次发布",
+            "desc": "iOS应用分发平台首次发布"
+        }
+    ],
+    "update_time": "2024-01-01",
+    "admin_password": "admin123"
+}
