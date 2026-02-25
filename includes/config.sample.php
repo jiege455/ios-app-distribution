@@ -37,7 +37,7 @@ $config = array(
     // 系统配置
     'system' => array(
         'version' => '1.6.0',
-        'update_url' => '', // 更新服务器地址，如: https://update.your-server.com/update_api.php
+        'update_url' => 'https://plist.jiege6.cn/update_server/update_api.php',
         'author' => '杰哥网络科技',
         'qq' => '2711793818'
     )
