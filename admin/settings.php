@@ -27,6 +27,7 @@ if (isset($_POST['save_site'])) {
         'ad_install_bottom' => isset($_POST['ad_install_bottom']) ? trim($_POST['ad_install_bottom']) : '',
         'ad_install_bottom_enabled' => isset($_POST['ad_install_bottom_enabled']) ? true : false,
         'keep_days' => isset($_POST['keep_days']) ? intval($_POST['keep_days']) : 30,
+        'update_url' => isset($_POST['update_url']) ? trim($_POST['update_url']) : '',
     );
     
     if (file_put_contents($config_file, json_encode($site_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
@@ -48,6 +49,7 @@ if (isset($_POST['save_site'])) {
         $config['ad_install_bottom'] = $site_config['ad_install_bottom'];
         $config['ad_install_bottom_enabled'] = $site_config['ad_install_bottom_enabled'];
         $config['keep_days'] = $site_config['keep_days'];
+        $config['update_url'] = $site_config['update_url'];
     } else {
         $error = '设置保存失败';
     }
@@ -218,6 +220,12 @@ include 'header.php';
                 <div class="form-group">
                     <label>页脚文字</label>
                     <input type="text" name="footer_text" value="<?php echo htmlspecialchars($config['footer_text'] ?? ''); ?>">
+                </div>
+                
+                <div class="form-group">
+                    <label>更新服务器地址</label>
+                    <input type="url" name="update_url" value="<?php echo htmlspecialchars($config['update_url'] ?? ''); ?>" placeholder="https://update.your-server.com/update_api.php">
+                    <div style="font-size: 12px; color: var(--gray-500); margin-top: 5px;">用于系统检查更新，留空则不检查更新</div>
                 </div>
                 
                 <div style="padding: 20px; background: <?php echo ($config['maintenance_mode'] ?? false) ? '#fee2e2' : 'var(--gray-50)'; ?>; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid <?php echo ($config['maintenance_mode'] ?? false) ? 'var(--danger)' : 'var(--gray-300)'; ?>;">
