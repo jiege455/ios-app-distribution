@@ -252,34 +252,53 @@ class AppStats {
         $row = $result->fetch_assoc();
         $stats['total_apps'] = (int)$row['count'];
         
-        // 总下载量
-        $result = $this->db->query("SELECT COUNT(*) as count FROM download_stats WHERE status = 'completed'");
+        // 总下载量（从urls表获取）
+        $result = $this->db->query("SELECT SUM(download_count) as total FROM urls");
         $row = $result->fetch_assoc();
-        $stats['total_downloads'] = (int)$row['count'];
+        $stats['total_downloads'] = (int)($row['total'] ?? 0);
         
-        // 总安装量
-        $result = $this->db->query("SELECT COUNT(*) as count FROM install_stats WHERE status = 'completed'");
-        $row = $result->fetch_assoc();
-        $stats['total_installs'] = (int)$row['count'];
+        // 总安装量（从urls表获取，如果没有install_count字段则使用download_count）
+        $result = $this->db->query("SHOW COLUMNS FROM urls LIKE 'install_count'");
+        if ($result->num_rows > 0) {
+            $result = $this->db->query("SELECT SUM(install_count) as total FROM urls");
+            $row = $result->fetch_assoc();
+            $stats['total_installs'] = (int)($row['total'] ?? 0);
+        } else {
+            $stats['total_installs'] = $stats['total_downloads'];
+        }
         
-        // 今日统计
+        // 今日统计（简化版，直接显示总下载量）
+        // 如果需要精确的今日统计，需要确保daily_stats表有数据
         $today = date('Y-m-d');
-        $result = $this->db->query("SELECT SUM(download_count) as downloads, SUM(install_count) as installs FROM daily_stats WHERE stat_date = '$today'");
+        $result = $this->db->query("SELECT SUM(download_count) as downloads FROM daily_stats WHERE stat_date = '$today'");
         if ($row = $result->fetch_assoc()) {
-            $stats['today_downloads'] = (int)$row['downloads'];
-            $stats['today_installs'] = (int)$row['installs'];
+            $stats['today_downloads'] = (int)($row['downloads'] ?? 0);
+        }
+        
+        // 如果今日统计为空，显示提示
+        if ($stats['today_downloads'] == 0 && $stats['total_downloads'] > 0) {
+            $stats['today_downloads'] = '-'; // 表示暂无今日数据
         }
         
         // 热门应用（按下载量）
-        $sql = "SELECT u.uid, u.app_name, u.platform, COUNT(dl.id) as download_count 
-                FROM urls u 
-                LEFT JOIN download_stats dl ON u.uid = dl.app_uid AND dl.status = 'completed' 
-                GROUP BY u.uid 
+        $sql = "SELECT uid, app_name, platform, download_count 
+                FROM urls 
                 ORDER BY download_count DESC 
                 LIMIT 10";
         $result = $this->db->query($sql);
         while ($row = $result->fetch_assoc()) {
-            $stats['top_apps'][] = $row;
+            if ($row['download_count'] > 0) {
+                $stats['top_apps'][] = $row;
+            }
+        }
+        
+        // 如果没有下载数据，使用总下载量作为备用
+        if (empty($stats['top_apps'])) {
+            $stats['total_downloads'] = 0;
+            $result = $this->db->query("SELECT SUM(download_count) as total FROM urls");
+            if ($row = $result->fetch_assoc()) {
+                $stats['total_downloads'] = (int)$row['total'];
+            }
         }
         
         return $stats;
