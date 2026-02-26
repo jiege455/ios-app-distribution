@@ -176,6 +176,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     password VARCHAR(255),
                     create_time DATETIME,
                     last_login DATETIME
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+                
+                "CREATE TABLE IF NOT EXISTS download_stats (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    app_uid VARCHAR(50) NOT NULL,
+                    download_time DATETIME NOT NULL,
+                    ip_address VARCHAR(45),
+                    user_agent TEXT,
+                    platform VARCHAR(20),
+                    status ENUM('started', 'completed', 'failed') DEFAULT 'started',
+                    error_message TEXT,
+                    INDEX idx_app_uid (app_uid),
+                    INDEX idx_download_time (download_time)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+                
+                "CREATE TABLE IF NOT EXISTS install_stats (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    app_uid VARCHAR(50) NOT NULL,
+                    install_time DATETIME NOT NULL,
+                    ip_address VARCHAR(45),
+                    user_agent TEXT,
+                    platform VARCHAR(20),
+                    status ENUM('started', 'completed', 'failed') DEFAULT 'started',
+                    error_message TEXT,
+                    INDEX idx_app_uid (app_uid),
+                    INDEX idx_install_time (install_time)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+                
+                "CREATE TABLE IF NOT EXISTS daily_stats (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    app_uid VARCHAR(50) NOT NULL,
+                    stat_date DATE NOT NULL,
+                    download_count INT DEFAULT 0,
+                    install_count INT DEFAULT 0,
+                    install_success_count INT DEFAULT 0,
+                    UNIQUE KEY uk_app_date (app_uid, stat_date),
+                    INDEX idx_stat_date (stat_date)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             );
             
