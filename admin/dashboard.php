@@ -49,7 +49,7 @@ include 'header.php';
     </div>
     <div class="stat-card">
         <div class="icon">📊</div>
-        <div class="number"><?php echo is_numeric($global_stats['today_downloads']) ? $global_stats['today_downloads'] : $global_stats['today_downloads']; ?></div>
+        <div class="number"><?php echo $global_stats['today_downloads']; ?></div>
         <div class="label">今日下载</div>
     </div>
     <div class="stat-card">

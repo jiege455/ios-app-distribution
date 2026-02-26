@@ -283,22 +283,12 @@ class AppStats {
         // 热门应用（按下载量）
         $sql = "SELECT uid, app_name, platform, download_count 
                 FROM urls 
+                WHERE download_count > 0
                 ORDER BY download_count DESC 
                 LIMIT 10";
         $result = $this->db->query($sql);
         while ($row = $result->fetch_assoc()) {
-            if ($row['download_count'] > 0) {
-                $stats['top_apps'][] = $row;
-            }
-        }
-        
-        // 如果没有下载数据，使用总下载量作为备用
-        if (empty($stats['top_apps'])) {
-            $stats['total_downloads'] = 0;
-            $result = $this->db->query("SELECT SUM(download_count) as total FROM urls");
-            if ($row = $result->fetch_assoc()) {
-                $stats['total_downloads'] = (int)$row['total'];
-            }
+            $stats['top_apps'][] = $row;
         }
         
         return $stats;
